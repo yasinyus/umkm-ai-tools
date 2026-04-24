@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth.js required models ────────────────────────────────────────────────
+
+model User {
+  id                 String             @id @default(cuid())
+  name               String?
+  email              String             @unique
+  emailVerified      DateTime?
+  image              String?
+  createdAt          DateTime           @default(now())
+  subscriptionStatus SubscriptionStatus @default(TRIAL)
+  subscriptionEndAt  DateTime?
+
+  accounts         Account[]
+  sessions         Session[]
+  contents         AiContent[]
+  catalogPages     CatalogPage[]
+  ingredients      Ingredient[]
+  products         Product[]
+  invoices         Invoice[]
+  competitorPrices CompetitorPrice[]
+  messages         MessageHistory[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── App models ──────────────────────────────────────────────────────────────
+
+model AiContent {
+  id          String        @id @default(cuid())
+  userId      String
+  type        ContentType
+  status      ContentStatus @default(DRAFT)
+  title       String?
+  text        String?       @db.Text
+  imageUrl    String?       @db.Text
+  platform    String?
+  metadata    Json?
+  scheduledAt DateTime?
+  postedAt    DateTime?
+  createdAt   DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status, scheduledAt])
+}
+
+model CatalogPage {
+  id          String   @id @default(cuid())
+  userId      String
+  slug        String   @unique
+  title       String
+  description String?
+  waNumber    String?
+  contentIds  Json     @default("[]")
+  isPublic    Boolean  @default(true)
+  views       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum ContentType {
+  CAPTION
+  IMAGE
+}
+
+enum ContentStatus {
+  DRAFT
+  SCHEDULED
+  POSTED
+}
+
+// ─── HPP / Financial models ───────────────────────────────────────────────────
+
+model Ingredient {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  unit        String
+  costPerUnit Float
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productIngredients ProductIngredient[]
+  invoiceItems       InvoiceItem[]
+
+  @@index([userId])
+}
+
+model Product {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  sellingPrice Float
+  cogs         Float    @default(0)
+  marginPct    Float    @default(0)
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productIngredients ProductIngredient[]
+
+  @@index([userId])
+}
+
+model ProductIngredient {
+  id           String @id @default(cuid())
+  productId    String
+  ingredientId String
+  quantity     Float
+
+  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, ingredientId])
+}
+
+model Invoice {
+  id        String        @id @default(cuid())
+  userId    String
+  rawText   String?       @db.Text
+  status    InvoiceStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items InvoiceItem[]
+
+  @@index([userId])
+}
+
+model InvoiceItem {
+  id           String  @id @default(cuid())
+  invoiceId    String
+  name         String
+  quantity     Float
+  unit         String
+  pricePerUnit Float
+  totalPrice   Float
+  ingredientId String?
+
+  invoice    Invoice     @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  ingredient Ingredient? @relation(fields: [ingredientId], references: [id])
+}
+
+// ─── Competitor Intelligence ──────────────────────────────────────────────────
+
+model CompetitorPrice {
+  id          String   @id @default(cuid())
+  userId      String
+  productName String
+  ourPrice    Float
+  competitors Json
+  analysis    String?  @db.Text
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productName])
+  @@index([userId])
+}
+
+// ─── Reply Assistant (CRM) ────────────────────────────────────────────────────
+
+model MessageHistory {
+  id          String        @id @default(cuid())
+  userId      String
+  senderName  String
+  senderPhone String?
+  message     String        @db.Text
+  platform    String        @default("whatsapp")
+  status      MessageStatus @default(UNREAD)
+  replies     Json?
+  createdAt   DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+enum MessageStatus {
+  UNREAD
+  READ
+  REPLIED
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  INACTIVE
+}
