@@ -44,12 +44,14 @@ export async function analyzeCompetitor(
 
   await prisma.competitorPrice.upsert({
     where: { userId_productName: { userId: session.user.id, productName } },
-    update: { ourPrice, competitors, analysis: `${recommendation} ${strategy}` },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: { ourPrice, competitors: competitors as any, analysis: `${recommendation} ${strategy}` },
     create: {
       userId: session.user.id,
       productName,
       ourPrice,
-      competitors,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      competitors: competitors as any,
       analysis: `${recommendation} ${strategy}`,
     },
   });

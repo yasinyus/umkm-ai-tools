@@ -28,6 +28,13 @@ model User {
   invoices         Invoice[]
   competitorPrices CompetitorPrice[]
   messages         MessageHistory[]
+  customers        Customer[]
+  storeSettings    StoreSettings?
+  activityLogs     ActivityLog[]
+  transactions     Transaction[]
+  bioLink          BioLink?
+  coachMessages    CoachMessage[]
+  adminNote        String?           @db.Text
 }
 
 model Account {
@@ -239,4 +246,131 @@ enum SubscriptionStatus {
   TRIAL
   ACTIVE
   INACTIVE
+}
+
+// ─── CRM & WhatsApp Automation ────────────────────────────────────────────────
+
+model Customer {
+  id              String          @id @default(cuid())
+  userId          String
+  name            String
+  whatsappNumber  String
+  segment         CustomerSegment @default(NEW)
+  totalSpend      Float           @default(0)
+  aiContext       String?         @db.Text
+  isBotActive     Boolean         @default(true)
+  lastContactedAt DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatHistory ChatHistory[]
+
+  @@unique([userId, whatsappNumber])
+  @@index([userId])
+}
+
+model ChatHistory {
+  id         String           @id @default(cuid())
+  customerId String
+  direction  MessageDirection
+  message    String           @db.Text
+  isRead     Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, createdAt(sort: Desc)])
+}
+
+model StoreSettings {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  storeName   String?
+  menu        String?  @db.Text
+  prices      String?  @db.Text
+  openHours   String?
+  address     String?
+  description String?  @db.Text
+  autoReply   Boolean  @default(false)
+  waApiKey    String?
+  waToken     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum CustomerSegment {
+  NEW
+  LOYAL
+  AT_RISK
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+// ─── Activity, Revenue, Bio-Link, AI Coach ────────────────────────────────────
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String
+  orderId       String   @unique
+  amount        Float
+  status        String   @default("success")
+  paymentMethod String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model BioLink {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  slug         String   @unique
+  storeName    String
+  tagline      String?
+  description  String?  @db.Text
+  waNumber     String?
+  igHandle     String?
+  tiktokHandle String?
+  fbHandle     String?
+  websiteUrl   String?
+  isPublic     Boolean  @default(true)
+  theme        String   @default("default")
+  views        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CoachMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Asc)])
 }

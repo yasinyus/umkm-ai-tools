@@ -48,10 +48,22 @@ export async function POST(req: NextRequest) {
   subscriptionEndAt.setDate(subscriptionEndAt.getDate() + 30);
 
   try {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { subscriptionStatus: "ACTIVE", subscriptionEndAt },
-    });
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { subscriptionStatus: "ACTIVE", subscriptionEndAt },
+      }),
+      prisma.transaction.upsert({
+        where: { orderId: order_id },
+        update: { status: "success" },
+        create: {
+          userId,
+          orderId: order_id,
+          amount: parseFloat(gross_amount),
+          status: "success",
+        },
+      }),
+    ]);
     console.log(`[webhook] Activated subscription for user ${userId} until ${subscriptionEndAt.toISOString()}`);
   } catch (err) {
     console.error("[webhook] DB update failed", err);

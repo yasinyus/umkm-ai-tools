@@ -11,6 +11,10 @@ import {
   BarChart2,
   Sparkles,
   CreditCard,
+  Users,
+  MessageSquareText,
+  BrainCircuit,
+  Link2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -18,6 +22,7 @@ export type NavItem = {
   label: string;
   href: string;
   icon: LucideIcon;
+  group?: string;
 };
 
 export const navItems: NavItem[] = [
@@ -31,6 +36,10 @@ export const navItems: NavItem[] = [
   { label: "Trend Watch", href: "/trends", icon: TrendingUp },
   { label: "Katalog Digital", href: "/catalog", icon: Store },
   { label: "Content Calendar", href: "/scheduler", icon: CalendarClock },
+  { label: "AI Business Coach", href: "/ai-coach", icon: BrainCircuit, group: "Business Tools" },
+  { label: "Smart Bio-Link", href: "/bio-link", icon: Link2, group: "Business Tools" },
+  { label: "CRM Dashboard", href: "/crm", icon: Users, group: "CRM & WhatsApp" },
+  { label: "WA Automation", href: "/whatsapp", icon: MessageSquareText, group: "CRM & WhatsApp" },
   { label: "Billing", href: "/billing", icon: CreditCard },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

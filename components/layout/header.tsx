@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Plus, Bell, User, Settings, CreditCard, LogOut } from "lucide-react";
+import { Plus, Bell, User, Settings, CreditCard, LogOut, MonitorOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MobileSidebar } from "./mobile-sidebar";
-import { signOutUser } from "@/actions/auth";
+import { signOutUser, signOutAllDevices } from "@/actions/auth";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -28,6 +28,10 @@ const pageTitles: Record<string, string> = {
   "/scheduler": "Content Calendar",
   "/billing": "Billing & Langganan",
   "/settings": "Settings",
+  "/ai-coach": "AI Business Coach",
+  "/bio-link": "Smart Bio-Link",
+  "/crm": "CRM Dashboard",
+  "/whatsapp": "WhatsApp Automation",
 };
 
 type User = {
@@ -140,6 +144,15 @@ export function Header({ user }: { user: User }) {
                 <LogOut className="w-4 h-4 shrink-0" />
                 <button type="submit" className="w-full text-left">
                   Sign Out
+                </button>
+              </form>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem className="gap-2 text-sm text-destructive focus:text-destructive p-0">
+              <form action={signOutAllDevices} className="flex items-center gap-2 w-full px-2 py-1.5">
+                <MonitorOff className="w-4 h-4 shrink-0" />
+                <button type="submit" className="w-full text-left">
+                  Keluar Semua Perangkat
                 </button>
               </form>
             </DropdownMenuItem>

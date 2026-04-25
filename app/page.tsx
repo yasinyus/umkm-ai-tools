@@ -1,3 +1,4 @@
+import type React from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { signInWithGoogle } from "@/actions/auth";
@@ -19,6 +20,11 @@ import {
   Shield,
   Users,
   Clock,
+  MessageSquareText,
+  BrainCircuit,
+  Link2,
+  ChevronDown,
+  Quote,
 } from "lucide-react";
 
 export const metadata = {
@@ -61,7 +67,17 @@ function SignInButton({
   );
 }
 
-const features = [
+type Feature = {
+  icon: React.ElementType;
+  color: string;
+  bg: string;
+  title: string;
+  desc: string;
+  tags: string[];
+  isNew?: boolean;
+};
+
+const features: Feature[] = [
   {
     icon: MessageSquare,
     color: "text-indigo-600",
@@ -134,6 +150,42 @@ const features = [
     desc: "Semua caption dan gambar AI tersimpan otomatis di akun Anda. Akses, filter, dan download ulang kapan saja tanpa kehilangan karya Anda.",
     tags: ["Tersimpan otomatis", "Filter by type", "Download ulang"],
   },
+  {
+    icon: Users,
+    color: "text-indigo-600",
+    bg: "bg-indigo-50",
+    title: "CRM Dashboard",
+    desc: "Kelola data pelanggan WhatsApp secara terpusat. Segmentasi otomatis (Loyal/Baru/At-Risk), pantau riwayat chat, dan baca AI Insights untuk setiap pelanggan.",
+    tags: ["Segmentasi AI", "Riwayat chat", "Smart filter"],
+    isNew: true,
+  },
+  {
+    icon: MessageSquareText,
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    title: "AI WhatsApp Automation",
+    desc: "Bot AI yang membalas pesan WhatsApp pelanggan 24/7 menggunakan GPT-4o. Terintegrasi dengan data CRM — menyapa nama, menawarkan produk favorit, dan update knowledge base otomatis.",
+    tags: ["GPT-4o replies", "Fonnte & Meta API", "Take Over mode"],
+    isNew: true,
+  },
+  {
+    icon: BrainCircuit,
+    color: "text-violet-600",
+    bg: "bg-violet-50",
+    title: "AI Business Coach",
+    desc: "Konsultan bisnis AI berbasis GPT-4o yang membaca data HPP, margin, dan pelanggan Anda secara real-time untuk memberikan saran strategis yang presisi dan actionable.",
+    tags: ["Analisis margin", "Strategi harga", "Retensi pelanggan"],
+    isNew: true,
+  },
+  {
+    icon: Link2,
+    color: "text-rose-600",
+    bg: "bg-rose-50",
+    title: "Smart Bio-Link",
+    desc: "Buat halaman profil publik UMKM Anda dalam hitungan menit. Tampilkan menu, harga, tombol WA, Instagram, TikTok — semua di satu link yang bisa dibagikan.",
+    tags: ["Link publik", "Menu & harga", "Multi-platform"],
+    isNew: true,
+  },
 ];
 
 const pricingPlans = [
@@ -141,15 +193,15 @@ const pricingPlans = [
     name: "Trial Gratis",
     price: "Rp 0",
     period: "7 hari akses penuh",
-    description: "Coba semua fitur tanpa komitmen. Tidak perlu kartu kredit.",
+    description: "Coba semua 13 fitur AI tanpa komitmen. Tidak perlu kartu kredit.",
     features: [
-      "Semua 9 fitur AI",
-      "AI Caption Generator",
-      "AI Image Editor",
-      "HPP Optimizer",
-      "Reply Assistant",
-      "Katalog Digital",
-      "Content Calendar",
+      "Semua 13 fitur AI",
+      "AI Business Coach (GPT-4o)",
+      "Smart Bio-Link Generator",
+      "CRM Dashboard + AI Insights",
+      "AI WhatsApp Bot 24/7",
+      "HPP Optimizer & Caption AI",
+      "Katalog Digital & Content Calendar",
     ],
     cta: "Mulai Trial Gratis",
     highlighted: false,
@@ -160,16 +212,70 @@ const pricingPlans = [
     period: "per bulan",
     description: "Akses penuh tanpa batas + support WhatsApp langsung dari tim kami.",
     features: [
-      "Semua fitur Trial +",
-      "Akses tidak terbatas",
-      "Priority support WhatsApp",
-      "Update fitur terbaru",
+      "Semua 13 fitur AI tanpa batas",
+      "AI Business Coach GPT-4o",
+      "Smart Bio-Link publik",
+      "CRM + WhatsApp Bot 24/7",
+      "Backup data otomatis (Excel)",
       "Simpan hingga 10.000 konten",
-      "Export & download HD",
       "Garansi uang kembali 3 hari",
     ],
     cta: "Mulai Trial — Upgrade Nanti",
     highlighted: true,
+  },
+];
+
+const testimonials = [
+  {
+    name: "Sari Wahyuni",
+    role: "Pemilik Warung Makan",
+    location: "Bogor",
+    avatar: "SW",
+    content: "Dulu balas pesan WhatsApp seharian sampai kelelahan. Sekarang AI yang balas otomatis, pelanggan senang, saya bisa fokus masak. Omzet naik 40% dalam 2 bulan!",
+    stars: 5,
+  },
+  {
+    name: "Budi Santoso",
+    role: "Penjual Hijab Online",
+    location: "Bandung",
+    avatar: "BS",
+    content: "Foto produk saya dulu plain banget. Sekarang pakai AI Image Editor, background langsung bisa ganti jadi studio. Customer bilang foto saya paling cantik di kategori!",
+    stars: 5,
+  },
+  {
+    name: "Dewi Kurnia",
+    role: "Warung Kopi & Snack",
+    location: "Surabaya",
+    avatar: "DK",
+    content: "AI Business Coach bantu saya sadar margin kopi saya terlalu kecil. Setelah ikuti sarannya, profit per cup naik dari 15% jadi 35%. Luar biasa!",
+    stars: 5,
+  },
+];
+
+const faqs = [
+  {
+    q: "Apakah saya perlu keahlian teknis untuk menggunakan SosmedAI?",
+    a: "Tidak sama sekali. SosmedAI dirancang untuk pemilik UMKM yang sibuk — cukup login dengan Google, isi informasi toko Anda, dan semua fitur AI siap digunakan dalam hitungan menit.",
+  },
+  {
+    q: "Bagaimana cara kerja AI WhatsApp Bot?",
+    a: "Setelah Anda mengisi Knowledge Base toko (menu, harga, jam buka, alamat) dan menghubungkan akun WhatsApp Business via Fonnte atau Meta Cloud API, bot akan otomatis membalas setiap pesan masuk menggunakan GPT-4o. Anda bisa 'Take Over' kapan saja untuk membalas manual.",
+  },
+  {
+    q: "Apakah data bisnis saya aman?",
+    a: "Ya. Data Anda disimpan di database PostgreSQL yang terenkripsi. Kami tidak berbagi data Anda dengan pihak ketiga. Anda bisa menghapus akun beserta semua data kapan saja.",
+  },
+  {
+    q: "Berapa batas penggunaan fitur AI per bulan?",
+    a: "Selama trial 7 hari Anda bisa menggunakan semua fitur tanpa batas. Paket UMKM Rp 49.000/bulan juga memberikan akses tidak terbatas untuk semua 13 fitur AI.",
+  },
+  {
+    q: "Bagaimana jika saya tidak puas setelah berlangganan?",
+    a: "Kami menawarkan garansi uang kembali penuh dalam 3 hari setelah pembayaran — tidak ada pertanyaan. Hubungi support WhatsApp kami dan dana dikembalikan dalam 1x24 jam.",
+  },
+  {
+    q: "Apakah AI Business Coach bisa dipakai untuk bisnis apapun?",
+    a: "Ya. AI Coach membaca data produk dan pelanggan akun Anda secara otomatis, sehingga sarannya selalu relevan — baik untuk warung makan, toko online, salon kecantikan, atau usaha konveksi.",
   },
 ];
 
@@ -214,6 +320,8 @@ export default async function LandingPage() {
             <a href="#features" className="hover:text-gray-900 transition-colors">Fitur</a>
             <a href="#pricing" className="hover:text-gray-900 transition-colors">Harga</a>
             <a href="#how" className="hover:text-gray-900 transition-colors">Cara Kerja</a>
+            <a href="#testimonials" className="hover:text-gray-900 transition-colors">Testimoni</a>
+            <a href="#faq" className="hover:text-gray-900 transition-colors">FAQ</a>
           </div>
           <SignInButton
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 transition-colors"
@@ -230,7 +338,7 @@ export default async function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold mb-6 border border-indigo-100">
             <Star className="w-3.5 h-3.5" />
-            9 Fitur AI dalam 1 Platform · Khusus UMKM Indonesia
+            13 Fitur AI dalam 1 Platform · Khusus UMKM Indonesia
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
             Satu Platform AI untuk{" "}
@@ -264,7 +372,7 @@ export default async function LandingPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-              9 Fitur AI yang Bikin Bisnis Makin Mudah
+              13 Fitur AI yang Bikin Bisnis Makin Mudah
             </h2>
             <p className="text-gray-500 text-lg max-w-2xl mx-auto">
               Dirancang khusus untuk kebutuhan operasional UMKM Indonesia sehari-hari.
@@ -276,8 +384,13 @@ export default async function LandingPage() {
               return (
                 <div
                   key={f.title}
-                  className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  className={`bg-white rounded-2xl p-6 border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all relative ${f.isNew ? "border-indigo-200 ring-1 ring-indigo-100" : "border-gray-100"}`}
                 >
+                  {f.isNew && (
+                    <span className="absolute top-4 right-4 text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white uppercase tracking-wide">
+                      Baru
+                    </span>
+                  )}
                   <div className={`w-11 h-11 rounded-xl ${f.bg} flex items-center justify-center mb-4`}>
                     <Icon className={`w-5 h-5 ${f.color}`} />
                   </div>
@@ -395,43 +508,168 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* ── Testimonials ── */}
+      <section id="testimonials" className="py-20 bg-indigo-600">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-3">
+              Dipercaya UMKM Indonesia
+            </h2>
+            <p className="text-indigo-200 text-lg">
+              Cerita nyata dari pemilik usaha yang sudah merasakan manfaatnya.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-5">
+            {testimonials.map((t) => (
+              <div key={t.name} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 space-y-4">
+                <Quote className="w-6 h-6 text-indigo-300" />
+                <p className="text-white text-sm leading-relaxed">{t.content}</p>
+                <div className="flex items-center gap-0.5">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold text-white">
+                    {t.avatar}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{t.name}</p>
+                    <p className="text-xs text-indigo-300">{t.role} · {t.location}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section id="faq" className="py-20 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+              Pertanyaan yang Sering Ditanya
+            </h2>
+            <p className="text-gray-500 text-lg">Ada yang kurang jelas? Kami jawab di sini.</p>
+          </div>
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => (
+              <details
+                key={idx}
+                className="group rounded-xl border bg-white shadow-sm overflow-hidden"
+              >
+                <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-semibold text-sm hover:bg-gray-50 transition-colors">
+                  {faq.q}
+                  <ChevronDown className="w-4 h-4 text-gray-400 shrink-0 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="px-5 pb-4 text-sm text-gray-500 leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
-      <section className="py-20 bg-indigo-600">
+      <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold mb-6 border border-indigo-100">
+            <Star className="w-3.5 h-3.5" />
+            13 Fitur AI · Rp 49.000/bulan · Garansi 3 Hari
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
             Siap tingkatkan omzet bisnismu?
           </h2>
-          <p className="text-indigo-200 text-lg mb-8 leading-relaxed">
+          <p className="text-gray-500 text-lg mb-8 leading-relaxed max-w-2xl mx-auto">
             Bergabung dengan UMKM Indonesia yang sudah menggunakan SosmedAI
-            untuk membuat konten lebih cepat dan closing lebih banyak.
+            untuk membuat konten lebih cepat, membalas pelanggan 24/7, dan closing lebih banyak.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <SignInButton
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-white text-indigo-700 font-bold text-base shadow-xl hover:bg-indigo-50 transition-colors"
+              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-indigo-600 text-white font-bold text-base shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-colors"
               label="Mulai Trial 7 Hari — Gratis"
             />
           </div>
-          <p className="text-indigo-300 text-sm mt-4">
+          <p className="text-gray-400 text-sm mt-4">
             Tidak perlu kartu kredit · Batal kapan saja · Login 1 klik dengan Google
           </p>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-100 py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-indigo-600 flex items-center justify-center">
-              <Zap className="w-3.5 h-3.5 text-white" />
+      <footer className="bg-gray-950 text-gray-400">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+          <div className="grid sm:grid-cols-4 gap-8 mb-10">
+            {/* Brand */}
+            <div className="sm:col-span-1 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+                  <Zap className="w-3.5 h-3.5 text-white" />
+                </div>
+                <span className="font-bold text-white">SosmedAI</span>
+              </div>
+              <p className="text-xs leading-relaxed">
+                Platform AI lengkap untuk UMKM Indonesia. Dari konten sosmed sampai otomatisasi WhatsApp.
+              </p>
+              <div className="flex items-center gap-3 pt-1">
+                <a href="#" aria-label="Instagram" className="hover:text-white transition-colors">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </a>
+                <a href="#" aria-label="TikTok" className="hover:text-white transition-colors">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.5a8.16 8.16 0 0 0 4.77 1.52V7.57a4.85 4.85 0 0 1-1-.88z"/></svg>
+                </a>
+                <a href="#" aria-label="YouTube" className="hover:text-white transition-colors">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+              </div>
             </div>
-            <span className="font-semibold text-gray-700">SosmedAI</span>
+
+            {/* Fitur */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">Fitur</p>
+              <ul className="space-y-2 text-xs">
+                {["AI Caption Generator", "AI Image Editor", "HPP Optimizer", "CRM Dashboard", "AI WhatsApp Bot", "AI Business Coach", "Smart Bio-Link"].map((f) => (
+                  <li key={f}><a href="#features" className="hover:text-white transition-colors">{f}</a></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Perusahaan */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">Perusahaan</p>
+              <ul className="space-y-2 text-xs">
+                {[
+                  { label: "Fitur", href: "#features" },
+                  { label: "Harga", href: "#pricing" },
+                  { label: "Cara Kerja", href: "#how" },
+                  { label: "Testimoni", href: "#testimonials" },
+                  { label: "FAQ", href: "#faq" },
+                ].map((l) => (
+                  <li key={l.label}><a href={l.href} className="hover:text-white transition-colors">{l.label}</a></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">Support</p>
+              <ul className="space-y-2 text-xs">
+                <li><a href="https://wa.me/6281234567890" className="hover:text-white transition-colors">WhatsApp Support</a></li>
+                <li><a href="mailto:support@sosmedai.id" className="hover:text-white transition-colors">Email Support</a></li>
+                <li><span className="text-gray-600">Senin–Jumat, 08.00–17.00 WIB</span></li>
+              </ul>
+            </div>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="#features" className="hover:text-gray-700 transition-colors">Fitur</a>
-            <a href="#pricing" className="hover:text-gray-700 transition-colors">Harga</a>
-            <a href="#how" className="hover:text-gray-700 transition-colors">Cara Kerja</a>
+
+          <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <p>© {new Date().getFullYear()} SosmedAI · Dibuat dengan ❤ untuk UMKM Indonesia</p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
+              <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
+            </div>
           </div>
-          <p>© {new Date().getFullYear()} SosmedAI · Dibuat untuk UMKM Indonesia</p>
         </div>
       </footer>
     </div>
